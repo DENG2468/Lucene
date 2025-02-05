@@ -50,7 +50,7 @@ public class HighlightExample {
 
         // 排序
         Sort sort = new Sort(new SortField(FIELD_TITLE, SortField.Type.STRING, true));
-        TopFieldCollector collector = TopFieldCollector.create(sort, 10, true, false, false, false);
+        TopFieldCollector collector = TopFieldCollector.create(sort, 10, 10);
         searcher.search(query, collector);
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
 

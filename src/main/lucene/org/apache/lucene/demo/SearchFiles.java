@@ -121,7 +121,7 @@ public class SearchFiles {
 	public static void doPagingSearch(BufferedReader in, IndexSearcher searcher, Query query, int hitsPerPage, boolean raw, boolean interactive) throws IOException {
 		TopDocs results = searcher.search(query, (5 * hitsPerPage));
 		ScoreDoc[] hits = results.scoreDocs;
-		int numTotalHits = Math.toIntExact(results.totalHits);
+		int numTotalHits = Math.toIntExact(results.totalHits.value);
 		System.out.println((numTotalHits + " total matching documents"));
 		int start = 0;
 		int end = Math.min(numTotalHits, hitsPerPage);

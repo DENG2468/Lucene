@@ -34,7 +34,6 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import static org.apache.lucene.queryparser.xml.QueryTemplateManager.getQueryAsDOM;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;

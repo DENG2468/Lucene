@@ -16,11 +16,12 @@ import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.DoubleValuesSource;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.ByteBuffersDirectory;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -32,9 +33,9 @@ import static org.apache.lucene.search.SortField.Type.SCORE;
 
 
 public class ExpressionAggregationFacetsExample {
-	private final Directory indexDir = new RAMDirectory();
+	private final Directory indexDir = new ByteBuffersDirectory();
 
-	private final Directory taxoDir = new RAMDirectory();
+	private final Directory taxoDir = new ByteBuffersDirectory();
 
 	private final FacetsConfig config = new FacetsConfig();
 
@@ -64,8 +65,8 @@ public class ExpressionAggregationFacetsExample {
 		TaxonomyReader taxoReader = new DirectoryTaxonomyReader(taxoDir);
 		Expression expr = JavascriptCompiler.compile("_score * sqrt(popularity)");
 		SimpleBindings bindings = new SimpleBindings();
-		bindings.add(new SortField("_score", SCORE));
-		bindings.add(new SortField("popularity", LONG));
+		bindings.add("score", DoubleValuesSource.SCORES);
+		bindings.add("popularity", DoubleValuesSource.fromIntField("popularity"));
 		FacetsCollector fc = new FacetsCollector(true);
 		FacetsCollector.search(searcher, new MatchAllDocsQuery(), 10, fc);
 		Facets facets = new TaxonomyFacetSumValueSource(taxoReader, config, fc, expr.getDoubleValuesSource(bindings));

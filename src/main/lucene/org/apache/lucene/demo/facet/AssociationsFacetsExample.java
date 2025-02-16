@@ -12,7 +12,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.ByteBuffersDirectory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ import static org.apache.lucene.index.IndexWriterConfig.OpenMode.CREATE;
 // 主类
 public class AssociationsFacetsExample {
 	// 使用内存目录来存储索引和分类（taxonomy）数据
-	private final Directory indexDir = new RAMDirectory();
-	private final Directory taxoDir = new RAMDirectory();
+	private final Directory indexDir = new ByteBuffersDirectory();
+	private final Directory taxoDir = new ByteBuffersDirectory();
 
 	// 配置Facets
 	private final FacetsConfig config;

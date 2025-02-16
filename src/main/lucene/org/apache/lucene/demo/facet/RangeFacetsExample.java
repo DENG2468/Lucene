@@ -15,7 +15,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.ByteBuffersDirectory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import static org.apache.lucene.index.IndexWriterConfig.OpenMode.CREATE;
 
 
 public class RangeFacetsExample implements Closeable {
-	private final Directory indexDir = new RAMDirectory();
+	private final Directory indexDir = new ByteBuffersDirectory();
 
 	private IndexSearcher searcher;
 

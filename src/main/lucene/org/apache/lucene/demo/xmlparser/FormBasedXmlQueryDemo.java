@@ -16,7 +16,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.w3c.dom.Document;
 
 import javax.servlet.RequestDispatcher;
@@ -123,7 +123,7 @@ public class FormBasedXmlQueryDemo extends HttpServlet {
 		}
 	}
 	private void openExampleIndex() throws IOException {
-		RAMDirectory rd = new RAMDirectory();
+		ByteBuffersDirectory rd = new ByteBuffersDirectory();
 		IndexWriterConfig iwConfig = new IndexWriterConfig(analyzer);
 		IndexWriter writer = new IndexWriter(rd, iwConfig);
 		InputStream dataIn = getServletContext().getResourceAsStream("/WEB-INF/data.tsv");

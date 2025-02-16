@@ -17,7 +17,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.util.SloppyMath;
 
 import java.io.Closeable;
@@ -38,7 +38,7 @@ public class DistanceFacetsExample implements Closeable {
 
 	final DoubleRange TEN_KM = new DoubleRange("< 10 km", 0.0, true, 10.0, false);
 
-	private final Directory indexDir = new RAMDirectory();
+	private final Directory indexDir = new ByteBuffersDirectory();
 
 	private IndexSearcher searcher;
 
@@ -85,44 +85,44 @@ public class DistanceFacetsExample implements Closeable {
 			throw new RuntimeException(pe);
 		}
 		SimpleBindings bindings = new SimpleBindings();
-		bindings.add(new SortField("latitude", DOUBLE));
-		bindings.add(new SortField("longitude", DOUBLE));
+		bindings.add("latitude", DoubleValuesSource.constant(DistanceFacetsExample.ORIGIN_LATITUDE));
+		bindings.add("longitude", DoubleValuesSource.constant(DistanceFacetsExample.ORIGIN_LONGITUDE));
 		return distance.getDoubleValuesSource(bindings);
 	}
 
 	public static Query getBoundingBoxQuery(double originLat, double originLng, double maxDistanceKM) {
-		double originLatRadians = SloppyMath.toRadians(originLat);
-		double originLngRadians = SloppyMath.toRadians(originLng);
+		double originLatRadians = Math.toRadians(originLat);
+		double originLngRadians = Math.toRadians(originLng);
 		double angle = maxDistanceKM / (DistanceFacetsExample.EARTH_RADIUS_KM);
 		double minLat = originLatRadians - angle;
 		double maxLat = originLatRadians + angle;
 		double minLng;
 		double maxLng;
-		if ((minLat > (SloppyMath.toRadians((-90)))) && (maxLat < (SloppyMath.toRadians(90)))) {
+		if ((minLat > (Math.toRadians((-90)))) && (maxLat < (Math.toRadians(90)))) {
 			double delta = Math.asin(((Math.sin(angle)) / (Math.cos(originLatRadians))));
 			minLng = originLngRadians - delta;
-			if (minLng < (SloppyMath.toRadians((-180)))) {
+			if (minLng < (Math.toRadians((-180)))) {
 				minLng += 2 * (Math.PI);
 			}
 			maxLng = originLngRadians + delta;
-			if (maxLng > (SloppyMath.toRadians(180))) {
+			if (maxLng > (Math.toRadians(180))) {
 				maxLng -= 2 * (Math.PI);
 			}
 		}else {
-			minLat = Math.max(minLat, SloppyMath.toRadians((-90)));
-			maxLat = Math.min(maxLat, SloppyMath.toRadians(90));
-			minLng = SloppyMath.toRadians((-180));
-			maxLng = SloppyMath.toRadians(180);
+			minLat = Math.max(minLat, Math.toRadians((-90)));
+			maxLat = Math.min(maxLat, Math.toRadians(90));
+			minLng = Math.toRadians((-180));
+			maxLng = Math.toRadians(180);
 		}
 		BooleanQuery.Builder f = new BooleanQuery.Builder();
-		f.add(DoublePoint.newRangeQuery("latitude", SloppyMath.toDegrees(minLat), SloppyMath.toDegrees(maxLat)), FILTER);
+		f.add(DoublePoint.newRangeQuery("latitude", Math.toDegrees(minLat), Math.toDegrees(maxLat)), FILTER);
 		if (minLng > maxLng) {
 			BooleanQuery.Builder lonF = new BooleanQuery.Builder();
-			lonF.add(DoublePoint.newRangeQuery("longitude", SloppyMath.toDegrees(minLng), Double.POSITIVE_INFINITY), SHOULD);
-			lonF.add(DoublePoint.newRangeQuery("longitude", Double.NEGATIVE_INFINITY, SloppyMath.toDegrees(maxLng)), SHOULD);
+			lonF.add(DoublePoint.newRangeQuery("longitude", Math.toDegrees(minLng), Double.POSITIVE_INFINITY), SHOULD);
+			lonF.add(DoublePoint.newRangeQuery("longitude", Double.NEGATIVE_INFINITY, Math.toDegrees(maxLng)), SHOULD);
 			f.add(lonF.build(), MUST);
 		}else {
-			f.add(DoublePoint.newRangeQuery("longitude", SloppyMath.toDegrees(minLng), SloppyMath.toDegrees(maxLng)), FILTER);
+			f.add(DoublePoint.newRangeQuery("longitude", Math.toDegrees(minLng), Math.toDegrees(maxLng)), FILTER);
 		}
 		return f.build();
 	}

@@ -13,7 +13,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <org.apache.lucene>8.8.2</org.apache.lucene>
+        <org.apache.lucene>9.6.0</org.apache.lucene>
 
     </properties>
 
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-common</artifactId>
-            <version>${org.apache.lucene}</version>
+            <version>8.11.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-smartcn</artifactId>
-            <version>${org.apache.lucene}</version>
+            <version>8.11.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
